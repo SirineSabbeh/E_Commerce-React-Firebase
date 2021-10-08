@@ -1,25 +1,54 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import {BrowserRouter,Switch,Route} from 'react-router-dom';
+import { Home } from './components/Home';
+import {AddProducts} from './components/AddProducts';
+import { SignUp } from './components/SingUp';
+import {ProductsContextProvider} from './global/ProductContext';
+import { Login } from './components/Login';
+import { auth,db } from './config/config';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export class App extends Component {
+  state = {
+    user : null,
+  }
+  componentDidMount(){
+
+    // getting user info for navigation bar
+    auth.onAuthStateChanged(user => {
+      
+         if(user){
+            db.collection('Userauth').doc(user.uid).get().then(snapshot => {
+                this.setState({
+                    user: snapshot.data().UserName
+                })
+            })
+          }else{
+        
+            this.setState({
+                user: null
+            
+        })}
+    })
+  }
+
+
+
+  render() {
+    return(
+      <ProductsContextProvider>
+        <BrowserRouter>
+         <Switch>
+   
+          <Route exact path='/' component={() => <Home user={this.state.user} />} />
+          <Route exact path='/addproducts' component={AddProducts}></Route>
+          <Route exact path='/SignUp' component={SignUp}></Route>
+          <Route exact path='/Login' component={Login}></Route>
+        </Switch>
+      
+        </BrowserRouter>
+      </ProductsContextProvider>
+    )
+  }
 }
 
 export default App;
