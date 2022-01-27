@@ -2,10 +2,6 @@ import { Link , useHistory } from "react-router-dom";
 import log from '../images/react.svg';
 import { auth } from '../config/config';
 
-import Icon  from 'react-icons-kit';
-
-import {cart} from 'react-icons-kit/entypo/cart';
-
 export const Navbar =({user}) =>{
     
   const history = useHistory();
